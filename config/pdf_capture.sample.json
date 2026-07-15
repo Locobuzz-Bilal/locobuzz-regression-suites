@@ -1,0 +1,17 @@
+{
+  "url": "https://www.apple.com/",
+  "initialSleep": 3,
+  "actions": [
+    {"type": "sleep", "seconds": 1.0},
+    {"type": "click", "by": "text", "selector": "Continue", "timeout": 5},
+    {"type": "sleep", "seconds": 0.5}
+  ],
+  "pdf": {
+    "fitToContent": true,
+    "paperWidth": 8.27,
+    "paperHeight": 120,
+    "margins": {"top": 0, "bottom": 0, "left": 0, "right": 0},
+    "scale": 1.0,
+    "disableLinks": true
+  }
+}

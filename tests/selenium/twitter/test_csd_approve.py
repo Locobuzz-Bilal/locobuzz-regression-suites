@@ -1,0 +1,107 @@
+import sys
+import os
+# Ensure UTF-8 stdout for Windows parallel runs
+sys.stdout.reconfigure(encoding='utf-8')
+
+# Add project root for imports
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+
+import time
+import re
+import pytest
+from selenium import webdriver  
+from datetime import datetime
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
+from locobuzz_login.CX_login import locobuzzLogin
+from config.config import TICKET_IDS
+from elements.login_page import LoginPageElements
+from elements.reply_panel_page import ReplyPanelPageElements
+from utils.credentials import get_twitter_csd_creds
+
+TICKET_ID = TICKET_IDS["twitter"]
+
+@pytest.mark.selenium
+def test_csd_approve():
+    browser = None
+    screenshots_dir = os.path.join(os.path.dirname(__file__), "../../screenshots")
+    os.makedirs(screenshots_dir, exist_ok=True)
+
+    def take_screenshot(step_name):
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        safe_step_name = re.sub(r'[<>:"/\\|?*]', '_', step_name)
+        file_path = os.path.join(screenshots_dir, f"csd_{safe_step_name}_{timestamp}.png")
+        browser.save_screenshot(file_path)
+        print(f"📸 Screenshot captured: {file_path}")
+        return file_path
+
+    def safe_click(element):
+        browser.execute_script("arguments[0].scrollIntoView({block:'center'});", element)
+        browser.execute_script("arguments[0].click();", element)
+
+    try:
+        # ---- LOGIN ----
+        user, pwd = get_twitter_csd_creds()
+        browser = locobuzzLogin(user, pwd)
+        test_csd_approve.browser = browser
+        wait = WebDriverWait(browser, 15)
+
+        print("🟢 Performing CSD Approve workflow...")
+
+        # ---- Search Ticket ----
+        searchBtn = wait.until(EC.presence_of_element_located(
+            (By.XPATH, ReplyPanelPageElements.SEARCH_ICON)))
+        safe_click(searchBtn)
+
+        searchField = wait.until(EC.presence_of_element_located(
+            (By.XPATH, ReplyPanelPageElements.SEARCH_INPUT_BOX)))
+        searchField.clear()
+        searchField.send_keys(TICKET_ID)
+        safe_click(searchBtn)
+        time.sleep(5)
+
+        # ---- Click Approve ----
+        approveBtn = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, ReplyPanelPageElements.APPROVE_ICON)))
+        safe_click(approveBtn)
+
+        # ---- Enter note ----
+        noteBox = wait.until(EC.presence_of_element_located(
+            (By.XPATH, ReplyPanelPageElements.ENTER_APPROVAL_NOTE)))
+        noteBox.send_keys("Approving by pytest")
+
+        # ---- Attach media ----
+        attachBtn = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, ReplyPanelPageElements.ATTACH_PHOTO)))
+        safe_click(attachBtn)
+
+        imageThumb = wait.until(EC.presence_of_element_located(
+            (By.XPATH, ReplyPanelPageElements.PHOTO_URL)))
+        safe_click(imageThumb)
+
+        attachConfirm = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, ReplyPanelPageElements.ATTACH_BUTTON)))
+        safe_click(attachConfirm)
+
+        # ---- Save ----
+        saveBtn = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, ReplyPanelPageElements.PHOTO_SAVE_BUTTON)))
+        safe_click(saveBtn)
+
+        time.sleep(2)
+        print("✅ Ticket approved successfully!")
+
+    except TimeoutException as e:
+        take_screenshot("Timeout_or_Failure")
+        pytest.fail(f"Timeout while approving: {e}")
+
+    finally:
+        if browser:
+            browser.quit()
+            print("🧹 Browser closed safely")
+
+
+if __name__ == "__main__":
+    test_csd_approve()

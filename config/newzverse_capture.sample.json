@@ -1,0 +1,46 @@
+{
+  "url": "https://app.newzverse.ai/sign-in",
+  "initialSleep": 2,
+  "actions": [
+    {"type": "wait", "by": "css", "selector": "input[name=\"email\"]", "timeout": 20},
+    {"type": "type", "by": "css", "selector": "input[name=\"email\"]", "text": "${NEWZVERSE_EMAIL}"},
+
+    {"type": "wait", "by": "css", "selector": "input[name=\"password\"]", "timeout": 20},
+    {"type": "type", "by": "css", "selector": "input[name=\"password\"]", "text": "${NEWZVERSE_PASSWORD}"},
+
+    {"type": "wait", "by": "xpath", "selector": "//button[span[normalize-space()='Log In']]", "timeout": 20},
+    {"type": "click", "by": "xpath", "selector": "//button[span[normalize-space()='Log In']]"},
+    {"type": "wait_url_contains", "text": "/dashboard", "timeout": 20},
+
+    {"type": "sleep", "seconds": 5.0},
+    {"type": "click", "by": "text", "selector": "Analytics", "timeout": 15},
+    {"type": "sleep", "seconds": 2.0},
+    {"type": "scroll", "y": 0}
+  ],
+  "pdf": {
+    "fitToContent": true,
+    "emulatePrintMedia": true,
+    "preferCSSPageSize": false,
+    "paperWidth": 8.27,
+    "paperHeight": 100,
+    "margins": {"top": 0, "bottom": 0, "left": 0, "right": 0},
+    "scale": 1.75,
+    "disableLinks": true,
+    "forceRemoveOverflow": true,
+    "injectCss": "html, body { overflow: visible !important; } .ant-layout, .ant-layout-content { height: auto !important; overflow: visible !important; }",
+    "dualOutput": true,
+    "mode": "native",
+    "maxPaperHeight": 200
+  },
+  "domStableWaitSeconds": 20,
+  "capture": {
+    "deviceScaleFactor": 3,
+    "viewportWidth": 1920,
+    "viewportHeight": 1080,
+    "preCaptureFullScroll": true,
+    "fullScrollWaitSeconds": 30,
+    "postScrollStableWaitSeconds": 5,
+    "scrollIntervalMs": 400,
+    "scrollPasses": 3
+  }
+}

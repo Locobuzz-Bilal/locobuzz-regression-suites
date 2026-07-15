@@ -1,0 +1,37 @@
+# selenium
+# playwright
+# pytest
+# pytest-playwright
+# requests
+# pandas
+# openpyxl
+# webdriver-manager
+# pytest
+# pytest-html
+# pytest-playwright
+
+# Selenium WebDriver
+selenium==4.15.2
+webdriver-manager==4.0.1
+
+# Pytest & Plugins
+pytest==8.3.3
+pytest-html==4.1.1
+pytest-rerunfailures==14.0
+pytest-base-url==2.1.0
+pytest-metadata==3.1.1
+
+# Allure Reporting
+allure-pytest==2.13.5
+
+# Email Reporting
+yagmail==0.15.293
+
+# Utilities
+python-dotenv==1.0.0
+requests==2.31.0
+pandas==2.1.4
+openpyxl==3.1.2
+
+# AI (NLP Console)
+openai==2.14.0

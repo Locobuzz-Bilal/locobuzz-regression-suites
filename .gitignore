@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Secrets & local config
+.env
+*.env
+!.env.example
+
+# Test artifacts / reports
+outputs/
+reports/
+allure-results/
+allure-report/
+*.log
+*_report_*.html
+all_suites_report*.html
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+user_data/
