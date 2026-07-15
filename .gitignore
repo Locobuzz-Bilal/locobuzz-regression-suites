@@ -27,3 +27,6 @@ Thumbs.db
 .vscode/
 .idea/
 user_data/
+
+# Test run screenshots (output artifacts)
+tests/screenshots/
